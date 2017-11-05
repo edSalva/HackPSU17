@@ -1,8 +1,7 @@
 from app import app
-from flask import request
+from flask import request, jsonify
 import requests
 import json
-from sys import stderr
 import overpy
 
 @app.route('/', methods=['GET'])
@@ -12,9 +11,9 @@ def index():
 	lat = request.args.get('lat')
 	lon = request.args.get('lon')
 
-	speed = calcSpeed(lat, lon);
+	speed = calcSpeed(lat, lon)
 
-	return speed
+	return jsonify(rec_speed=speed)
 
 def calcSpeed(lat, lon, radius = 8e-5):
 	params = {

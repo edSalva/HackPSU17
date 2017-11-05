@@ -22,7 +22,7 @@ function getReccomend(position) {
 	oReq.addEventListener("load", 
 			function(resp) {
 		var recText = document.getElementById('rec_speed');
-		recText.innerHTML = this.responseText;
+		recText.innerHTML = JSON.parse(this.responseText)['rec_speed'];
 			});
 
 	console.log(url + "/?lat=" + lat + "&lon=" + lon);
