@@ -29,11 +29,55 @@
       <div id="close"><img src="images/close.png" onclick="gm.system.closeApp()" alt="close"></div>
       <div id="main">
 
-        <!-- Remove all code inside #main and add your own! -->
-        <h1>WeatherCar</h1>
-        <p>
-          Your VIN is: <span id="vin"></span>
-        </p>
+		<div class="foo white">
+			Ideal Speed
+		  <div class="instruments">
+			<div id="IdealSpeed">??</div>
+			<div id="units">km/h</div>
+		  </div>
+		</div>
+		<div class="foo white">
+			The Speed Limit
+			<div class="instruments">
+				<div id="SpeedLimit">??</div>
+				<div id="units">km/h</div>
+			</div>
+		</div>
+		<div class="foo white">
+			Your Longitude is: <span id="longitude"></span>
+			Your Latitude is: <span id="latitude"></span>
+			
+		</div>
+		<div class="foo white">
+			<img id="weatherImage" src="" alt="weather" width="193" height="193">
+				<script>
+				if(rain)
+					document.getElementById("weatherImage").src = "images/rain.png";
+				else if(sunny)
+					document.getElementById("weatherImage").src = "images/sunny.svg";
+				else if(snow)
+					document.getElementById("weatherImage").src = "images/snow.png";
+				</script>
+			</img>
+		</div>
+		
+		<div class="foo white">
+			Current Speed
+		  <div class="instruments">
+			<div id="CurrentSpeed">??</div>
+			<div id="units">km/h</div>
+		  </div>
+		</div>
+		<div class="foo white">
+			Breaking: <span id="break"></span>
+		</div>
+		<div class="foo white">
+			Acceleration: <span id="acceleration"></span>
+		</div>
+		<div class="foo white">
+			Steering: <span id="steering"></span>
+		</div>
+		
 
       </div>
     </div>
