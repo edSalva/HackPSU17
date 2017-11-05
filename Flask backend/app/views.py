@@ -3,6 +3,7 @@ from flask import request, jsonify
 import requests
 import json
 import overpy
+from math import exp
 
 @app.route('/', methods=['GET'])
 @app.route('/index')
@@ -13,9 +14,11 @@ def index():
 
 	speed = calcSpeed(lat, lon)
 
-	return jsonify(rec_speed=speed)
+	brakes, gas = calcPedals(speed)
 
-def calcSpeed(lat, lon, radius = 8e-5):
+	return jsonify(rec_speed=speed, brake_data = brakes, gas_data = gas)
+
+def calcSpeed(lat, lon):
 	params = {
 		'apikey': 'HackPSU2017',
 		'q': lat+","+lon
@@ -61,3 +64,20 @@ def calcSpeed(lat, lon, radius = 8e-5):
 		return str(int(topspeed.replace('mph','')) + change)
 	else:
 		return 'No Speed Data Available'
+
+def calcPedals(speed, tf=10, ti = 0):
+
+	MAXVAL = 100
+	th = (tf - ti)*3/4
+	brakes = []
+	gas = []
+	try:
+		k = 60/float(speed)
+		for t in (x * .01 for x in xrange(ti, tf*100)):
+			brakes.append(MAXVAL/(1 + exp(-k*(t - th))))
+			gas.append(MAXVAL*exp(-k*(t-1)))
+	except Exception as e:
+		app.logger.debug("Could not get brake/gas data, speed=%s", speed)
+		app.logger.debug(e)
+
+	return brakes, gas
