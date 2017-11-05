@@ -25,21 +25,55 @@
 
   </head>
 	<body>
-		<div id="wrapper">
-			<div id="close"><img src="images/close.png" onclick="gm.system.closeApp()" alt="close"></div>
-				<div id="main">
-					<h1>Speed</h1>
-					<div id="speed">??</div>
-					<h1>Reccomended</h1>
-					<div id="rec_speed">??</div>
-					<div id="brk_container" style="height: 370px; width:50%;"></div>
-					<div id="gas_container" style="height: 370px; width:50%;"></div>
-				</div>
-		 </div>
+    <div id="wrapper">
+      <div id="close"><img src="images/close.png" onclick="gm.system.closeApp()" alt="close"></div>
+      <div id="main">
 
-	 <!-- Your app code: -->
-	 <script src="js/app.js"></script>
-	 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-	
-	 </body>
-  </html>
+		<div class="foo white">
+			Ideal Speed
+		  <div class="instruments">
+			<div id="IdealSpeed">??</div>
+			<div id="units">mph</div>
+		  </div>
+		</div>
+		<div class="foo white">
+			The Speed Limit
+			<div class="instruments">
+				<div id="SpeedLimit">??</div>
+				<div id="units">mph</div>
+			</div>
+		</div>
+		<div class="foo white">
+			Your Longitude is: <span id="longitude"></span>
+			Your Latitude is: <span id="latitude"></span>
+			
+		</div>
+		<div class="foo white">
+			<img id="weatherImage" src="" alt="weather" width="193" height="193">
+		</div>
+		
+		<div class="foo white">
+			Current Speed
+		  <div class="instruments">
+			<div id="CurrentSpeed">??</div>
+			<div id="units">mph</div>
+		  </div>
+		</div>
+		<div class="foo white">
+			Breaking: <span id="break"></span>
+		</div>
+		<div class="foo white">
+			Acceleration: <span id="acceleration"></span>
+		</div>
+		<div class="foo white">
+			Steering: <span id="steering"></span>
+		</div>
+		
+
+      </div>
+    </div>
+
+    <!-- Your app code: -->
+    <script src="js/app.js"></script>
+  </body>
+</html>

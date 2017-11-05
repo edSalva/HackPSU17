@@ -12,13 +12,13 @@ def index():
 	lat = request.args.get('lat')
 	lon = request.args.get('lon')
 
-	speed = calcSpeed(lat, lon)
+	w, limit, speed = getLocData(lat, lon)
 
 	brakes, gas = calcPedals(speed)
 
-	return jsonify(rec_speed=speed, brake_data = brakes, gas_data = gas)
+	return jsonify(weather=w, rec_speed=speed, speed_limit=limit, brake_data = brakes, gas_data = gas)
 
-def calcSpeed(lat, lon):
+def getLocData(lat, lon):
 	params = {
 		'apikey': 'HackPSU2017',
 		'q': lat+","+lon
@@ -48,22 +48,29 @@ def calcSpeed(lat, lon):
 	
 	if w in ['rain', 'fog', 'rain', 'flurries', 'snow', 'freezing rain', 'heavy rain', 'light rain']:
 		change = -5
+		weather = 'rainy'
 	elif w in ['t-storms', 'sleet', 'rain and snow', 'ice']:
 		change = -10
+		weather = 'snow'
 	else:
 		change = -0
+		weather = 'sunny'
 
 
 	result = overpy.Overpass().query('way(around:50,%s,%s)["maxspeed"]; (._;>;); out body; ' % (lat, lon))
 
 	topspeed = None if len(result.ways) < 1 else result.ways[0].tags.get("maxspeed", "n/a")
 
+	topspeed = topspeed.replace('mph','');
+
 	app.logger.debug('Speed Limit: %s', topspeed)
 
 	if(topspeed):
-		return str(int(topspeed.replace('mph','')) + change)
+		rec_spd = int(topspeed) + change
 	else:
-		return 'No Speed Data Available'
+		rec_spd = 'No Speed Data Available'
+	
+	return weather, topspeed, rec_spd
 
 def calcPedals(speed, tf=10, ti = 0):
 

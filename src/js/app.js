@@ -8,16 +8,17 @@ function showSpeed(data) {
 	  console.log("Speed data: " + data);
 		  var speed = data.average_speed;
 			  if (speed !== undefined) {
-					    var speedText = document.getElementById('speed');
-							    speedText.innerHTML = speed;
-									}
+					    document.getElementById('CurrentSpeed').innerHTML = speed;
+				}
 };
 
 function getReccomend(position) {
 	var lat = position.coords.latitude / 3600000;
 	var lon = position.coords.longitude / 3600000;
 	//var turn_offset = -1 * (Math.abs(gm.info.getVehicleData(false,'wheel_angle') / 100)  +  Math.abs(gm.info.getVehicleData(false, 'yaw_rate') / 20));
-
+	
+	document.getElementById('latitude').innerHTML = lat;
+	document.getElementById('longitude').innerHTML = lon;
 
 	var oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", 
@@ -25,10 +26,21 @@ function getReccomend(position) {
 
 				var data = JSON.parse(this.responseText);
 				reccomended_speed = data['rec_speed']; 
-				var recText = document.getElementById('rec_speed');
-				recText.innerHTML = reccomended_speed; //+turn_offset;
 
-				window.onload = function() {graph_data(false, data['brake_data']);};
+				document.getElementById('IdealSpeed').innerHTML = reccomended_speed; //+turn_offset;
+				document.getElementById('SpeedLimit').innerHTML = data['speed_limit']
+
+				var weather = data['weather'];
+				var wImg = document.getElementById('weatherImage');
+				if(weather === 'sunny') {
+					wImg.src = 'images/sunny.svg';
+				}
+				else if(weather === 'rainy') {
+					wImg.src = 'images/rain.png';
+				}
+				else if(weather === 'snow') {
+					wImg.src = 'images/snow.png';
+				}
 				//graph_data(false, data['brake_data']);
 				//graph_data(true, data['gas_data']);
 	});
@@ -75,6 +87,7 @@ function graph_data(gas, data) {
 				x: t * 0.01,
 				y: data[t]
 			});
+	}
 
 	chart.render();
 
@@ -103,4 +116,3 @@ gm.info.watchPosition(getReccomend);
 gm.info.getCurrentPosition(getReccomend);
 
 gm.info.watchVehicleData(updateTurn, ['wheel_angle', 'yaw_rate']);
-

@@ -1,6 +1,7 @@
 /* Your CSS goes here */
 #main {
   text-align: center;
+   font-size: 150%;
 }
 
 #close {
@@ -21,3 +22,63 @@
     top: 104px;
   }
 }
+
+#CurrentSpeed {
+ font-size: 5em;
+ line-height: 1em;
+}
+
+#IdealSpeed {
+ font-size: 5em;
+ line-height: 1em;
+}
+
+#SpeedLimit {
+ font-size: 5em;
+ line-height: 1em;
+}
+
+.foo {
+  float: left;
+  bottom: 0px;
+  width: 193px;
+  height: 193px;
+  margin: 0px;
+  border: 1px solid rgba(0, 0, 0, .2);
+}
+
+.blue {
+  background: #13b4ff;
+}
+
+.purple {
+  background: #ab3fdd;
+}
+
+.wine {
+  background: #ae163e;
+}
+
+.silver {
+  background: #C0C0C0;
+}
+
+.fuchsia {
+  background: #FF00FF;
+}
+
+.teal {
+  background: #008080;
+}
+
+.lime {
+  background: #00FF00;
+}
+
+.yellow {
+  background: #FFFF00;
+}
+
+.white {
+  background: #FFFFFF;
+} 
