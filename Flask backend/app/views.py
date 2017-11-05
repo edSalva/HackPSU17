@@ -1,13 +1,17 @@
 from app import app
+from flask import request
 import requests
 import json
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 @app.route('/index')
 def index():
+
+	lat = request.args.get('lat')
+	lon = request.args.get('lon')
 	params = {
 		'apikey': 'HackPSU2017',
-		'q': '39.1434,-77.2014',
+		'q': ''+lat+','+ lon +'',
 	}
 
 	r = requests.get(
@@ -30,7 +34,9 @@ def index():
 	
 	#list of texts: https://apidev.accuweather.com/developers/weatherIcons
 	
-	if w == 'rain' or w== 'fog' or w == 't-storms' or w == 'rain' or w=='flurries' or w == 'snow' or w=='ice' or w=='sleet' or w=='freezing rain' or w=='rain and snow' or w=='heavy rain' or w=='light rain':
+	if w == 'rain' or w== 'fog'  or w == 'rain' or w=='flurries' or w == 'snow'  or w=='freezing rain' or w=='heavy rain' or w=='light rain':
 		return '-5';
+	elif w == 't-storms' or w=='sleet' or w=='rain and snow'  or w=='ice':
+		return '-10'
 	else:
 		return '0'
