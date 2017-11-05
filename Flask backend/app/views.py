@@ -51,10 +51,10 @@ def calcSpeed(lat, lon):
 	elif w in ['t-storms', 'sleet', 'rain and snow', 'ice']:
 		change = -10
 	else:
-		change = 0
+		change = -0
 
 
-	result = overpy.Overpass().query('way(around:10,%s,%s)["maxspeed"]; (._;>;); out body; ' % (lat, lon))
+	result = overpy.Overpass().query('way(around:50,%s,%s)["maxspeed"]; (._;>;); out body; ' % (lat, lon))
 
 	topspeed = None if len(result.ways) < 1 else result.ways[0].tags.get("maxspeed", "n/a")
 

@@ -2,6 +2,7 @@
 //
 
 var url = "http://127.0.0.1:5000";
+var reccomended_speed;
 
 function showSpeed(data) {
 	  console.log("Speed data: " + data);
@@ -15,89 +16,84 @@ function showSpeed(data) {
 function getReccomend(position) {
 	var lat = position.coords.latitude / 3600000;
 	var lon = position.coords.longitude / 3600000;
+	//var turn_offset = -1 * (Math.abs(gm.info.getVehicleData(false,'wheel_angle') / 100)  +  Math.abs(gm.info.getVehicleData(false, 'yaw_rate') / 20));
+
 
 	var oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", 
 			function(resp) {
 
 				var data = JSON.parse(this.responseText);
+				reccomended_speed = data['rec_speed']; 
 				var recText = document.getElementById('rec_speed');
-				recText.innerHTML = data['rec_speed'];
+				recText.innerHTML = reccomended_speed; //+turn_offset;
+
+				window.onload = function() {graph_data(false, data['brake_data']);};
+				//graph_data(false, data['brake_data']);
+				//graph_data(true, data['gas_data']);
+	});
 			
-var canvas = document.getElementById('brk_canvas'),
-context = canvas.getContext('2d');
-var stats = data['brake_data'], left = 0,
-			prev_stat = stats[0],
-			move_left_by = 100, 
-				width = canvas.width = 800,
-				height = canvas.height = 400;
-
-	context.translate(0, height);
-	context.scale(1, -1);
-
-	context.fillStyle = '#f6f6f6';
-	context.fillRect(0, 0, width, height);
-for(stat in stats) {
-		the_stat = stats[stat];
-
-			context.beginPath();
-				context.moveTo(left, prev_stat);
-					context.lineTo(left+move_left_by, the_stat);
-						context.lineWidth = 5;
-							context.lineCap = 'round';
-							/*
-							 * 	if(the_stat < stats[stat-1]) {
-							 * 			context.strokeStyle = '#c0392b';
-							 * 				} else {
-							 * 						context.strokeStyle = '#3b3b3b';
-							 * 							}
-							 * 								*/
-								context.stroke();
-
-									prev_stat = the_stat;
-										left += move_left_by;
-
-}
-
-canvas = document.getElementById('gas_canvas'),
-		context = canvas.getContext('2d');
-stats = data['gas_data'], left = 0,
-			prev_stat = stats[0],
-			move_left_by = 100, 
-					width = canvas.width = 800,
-							height = canvas.height = 400;
-
-context.translate(0, height);
-context.scale(1, -1);
-
-context.fillStyle = '#f6f6f6';
-context.fillRect(0, 0, width, height);
-
-for(stat in stats) {
-		the_stat = stats[stat];
-
-			context.beginPath();
-				context.moveTo(left, prev_stat);
-					context.lineTo(left+move_left_by, the_stat);
-						context.lineWidth = 5;
-							context.lineCap = 'round';
-							/*
-							 * 	if(the_stat < stats[stat-1]) {
-							 * 			context.strokeStyle = '#c0392b';
-							 * 				} else {
-							 * 						context.strokeStyle = '#3b3b3b';
-							 * 							}
-							 * 								*/
-								context.stroke();
-
-									prev_stat = the_stat;
-										left += move_left_by;
-
-}});
-
 	console.log(url + "/?lat=" + lat + "&lon=" + lon);
 	oReq.open("GET", url + "/?lat=" + lat + "&lon=" + lon);
 	oReq.send();
+};
+
+function updateTurn(data) {
+	console.log(data);
+
+	var turn_offset = -1 * (Math.abs(data.wheel_angle / 100)  +  Math.abs(data.yaw_rate / 20));
+	var recText = document.getElementById('rec_speed');
+	recText.innerHTML = turn_offset + reccomended_speed;
+};
+
+function graph_data(gas, data) {
+
+	var dps = [];
+	var chart = new CanvasJS.Chart(gas ? 'gas_container' : 'brk_container', {
+		title :{
+						 text: gas ? 'Acceleration' : 'Breaking'
+					 },
+			axisY :{
+							 includeZero: false
+						 },
+			data: [{
+							name: "Optimal Pattern",
+							type: "line",
+							dataPoints: opt_dps
+						},
+			{
+				name: "User Pattern",
+				type: "line",
+				dataPoints: dps
+			}]
+	});
+
+	console.log(chart);
+
+	for(t = 0; t < 1000; t++) {
+		opt_dps.push({
+				x: t * 0.01,
+				y: data[t]
+			});
+
+	chart.render();
+
+	t = 0;
+	var updateChart = function() {
+		var val = gm.info.getVehicleData(false, [gas ? 'accelerator_position' : 'brake_position']);
+		dps.push({
+			x: t,
+			y: val
+		});
+		t += 0.01;
+		chart.render();
+
+		if(t >= 10) {
+			clearInterval(interval);
+		}
+	}
+
+	var interval = setInterval(updateChart(), 10);
 }
 
 gm.info.watchVehicleData(showSpeed, ['average_speed']);
@@ -106,4 +102,5 @@ gm.info.getVehicleData(showSpeed, ['average_speed']);
 gm.info.watchPosition(getReccomend);
 gm.info.getCurrentPosition(getReccomend);
 
+gm.info.watchVehicleData(updateTurn, ['wheel_angle', 'yaw_rate']);
 
