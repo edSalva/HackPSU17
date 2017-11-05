@@ -2,6 +2,8 @@ from app import app
 from flask import request
 import requests
 import json
+from sys import stderr
+import overpy
 
 @app.route('/', methods=['GET'])
 @app.route('/index')
@@ -9,9 +11,15 @@ def index():
 
 	lat = request.args.get('lat')
 	lon = request.args.get('lon')
+
+	speed = calcSpeed(lat, lon);
+
+	return speed
+
+def calcSpeed(lat, lon, radius = 8e-5):
 	params = {
 		'apikey': 'HackPSU2017',
-		'q': ''+lat+','+ lon +'',
+		'q': lat+","+lon
 	}
 
 	r = requests.get(
@@ -33,10 +41,24 @@ def index():
 	w = r[0]['WeatherText'].lower()
 	
 	#list of texts: https://apidev.accuweather.com/developers/weatherIcons
+
+	app.logger.debug('Weather: %s', w)
 	
-	if w == 'rain' or w== 'fog'  or w == 'rain' or w=='flurries' or w == 'snow'  or w=='freezing rain' or w=='heavy rain' or w=='light rain':
-		return '-5';
-	elif w == 't-storms' or w=='sleet' or w=='rain and snow'  or w=='ice':
-		return '-10'
+	if w in ['rain', 'fog', 'rain', 'flurries', 'snow', 'freezing rain', 'heavy rain', 'light rain']:
+		change = -5
+	elif w in ['t-storms', 'sleet', 'rain and snow', 'ice']:
+		change = -10
 	else:
-		return '0'
+		change = 0
+
+
+	result = overpy.Overpass().query('way(around:10,%s,%s)["maxspeed"]; (._;>;); out body; ' % (lat, lon))
+
+	topspeed = None if len(result.ways) < 1 else result.ways[0].tags.get("maxspeed", "n/a")
+
+	app.logger.debug('Speed Limit: %s', topspeed)
+
+	if(topspeed):
+		return str(int(topspeed.replace('mph','')) + change)
+	else:
+		return 'No Speed Data Available'
