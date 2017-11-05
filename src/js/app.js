@@ -1,4 +1,7 @@
 // Your code goes here
+//
+
+var url = "http://127.0.0.1:5000";
 
 function showSpeed(data) {
 	  console.log(data);
@@ -12,8 +15,8 @@ function showSpeed(data) {
 function getReccomend(position) {
 	console.log(position);
 
-	var lat = pos.coords.latitude;
-	var lon = pos.coords.longitude;
+	var lat = position.coords.latitude / 3600000;
+	var lon = position.coords.longitude / 3600000;
 
 	var oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", 
@@ -22,7 +25,8 @@ function getReccomend(position) {
 		recText.innerHTML = this.responseText;
 			});
 
-	oReq.open("GET", url );//+ "/?lat=" + lot + "&lon=" + lon);
+	console.log(url + "/?lat=" + lat + "&lon=" + lon);
+	oReq.open("GET", url + "/?lat=" + lat + "&lon=" + lon);
 	oReq.send();
 }
 
