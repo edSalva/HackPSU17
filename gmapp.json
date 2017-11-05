@@ -1,0 +1,14 @@
+{
+  "name":"WeatherCar",
+  "id":"90903926",
+  "template": "Blank",
+  "version": "0.0.0",
+  "src": "src",
+  "dist": "dist",
+  "main": "index.html",
+  "icon": "Icon.png",
+  "developer": "Scream Team",
+  "category": "General",
+  "type": "RemoteHigh",
+  "description": "Generated on 11/4/2017, 8:15:40 PM by ngi-sdk version "
+}
