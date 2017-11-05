@@ -61,14 +61,15 @@ def getLocData(lat, lon):
 
 	topspeed = None if len(result.ways) < 1 else result.ways[0].tags.get("maxspeed", "n/a")
 
-	topspeed = topspeed.replace('mph','');
+	if topspeed: topspeed = topspeed.replace('mph','');
 
 	app.logger.debug('Speed Limit: %s', topspeed)
 
 	if(topspeed):
 		rec_spd = int(topspeed) + change
 	else:
-		rec_spd = 'No Speed Data Available'
+		rec_spd = 'N/A'
+		topspeed = 'N/A'
 	
 	return weather, topspeed, rec_spd
 

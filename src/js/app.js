@@ -17,8 +17,8 @@ function getReccomend(position) {
 	var lon = position.coords.longitude / 3600000;
 	//var turn_offset = -1 * (Math.abs(gm.info.getVehicleData(false,'wheel_angle') / 100)  +  Math.abs(gm.info.getVehicleData(false, 'yaw_rate') / 20));
 	
-	document.getElementById('latitude').innerHTML = lat;
-	document.getElementById('longitude').innerHTML = lon;
+	document.getElementById('latitude').innerHTML = Math.round(lat * 100)/100;
+	document.getElementById('longitude').innerHTML = Math.round(lon * 100)/100;
 
 	var oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", 
